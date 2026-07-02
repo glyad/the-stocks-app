@@ -11,12 +11,12 @@ import type { IgcFinancialChartComponent } from 'igniteui-webcomponents-charts';
 import type { HistoricalBar } from '../models/market';
 
 type FinancialChartRow = {
-  date: Date;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
+  Date: Date;
+  Open: number;
+  High: number;
+  Low: number;
+  Close: number;
+  Volume: number;
 };
 
 IgcFinancialChartModule.register();
@@ -110,12 +110,12 @@ export class StockChart extends LitElement {
 
   private get chartRows(): FinancialChartRow[] {
     return this.bars.map((bar) => ({
-      date: new Date(bar.timestamp),
-      open: bar.open,
-      high: bar.high,
-      low: bar.low,
-      close: bar.close,
-      volume: bar.volume
+      Date: new Date(bar.timestamp),
+      Open: bar.open,
+      High: bar.high,
+      Low: bar.low,
+      Close: bar.close,
+      Volume: bar.volume
     }));
   }
 }
