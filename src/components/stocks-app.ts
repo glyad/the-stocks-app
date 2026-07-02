@@ -572,8 +572,8 @@ export class StocksApp extends LitElement {
             type="search"
             placeholder="Search"
             .value=${this.searchQuery}
-            @input=${this.handleSearchInput}
-            @keydown=${this.handleSearchKeydown}
+            @input=${(event: Event) => this.handleSearchInput(event)}
+            @keydown=${(event: KeyboardEvent) => this.handleSearchKeydown(event)}
           />
           ${this.searchResults.length > 0
             ? html`<div class="results">
@@ -652,8 +652,8 @@ export class StocksApp extends LitElement {
           )}
         </div>
         <div class="actions">
-          <button class="icon-button" title="Refresh" @click=${this.refreshAll}>R</button>
-          <button class="icon-button" title="Settings" @click=${this.openSettings}>S</button>
+          <button class="icon-button" title="Refresh" @click=${() => this.refreshAll()}>R</button>
+          <button class="icon-button" title="Settings" @click=${() => this.openSettings()}>S</button>
         </div>
       </div>
       <stock-chart .bars=${this.history} .change=${quote.change}></stock-chart>
@@ -707,7 +707,7 @@ export class StocksApp extends LitElement {
       <section class="settings-panel" role="dialog" aria-modal="true" aria-label="Settings">
         <div class="settings-head">
           <h2>Settings</h2>
-          <button class="icon-button" title="Close" @click=${this.closeSettings}>x</button>
+          <button class="icon-button" title="Close" @click=${() => this.closeSettings()}>x</button>
         </div>
         <div class="settings-body">
           <div class="field">
@@ -734,9 +734,9 @@ export class StocksApp extends LitElement {
           </div>
         </div>
         <div class="settings-actions">
-          <button class="icon-button" title="Clear cache" @click=${this.clearCache}>Clear</button>
-          <button class="icon-button" title="Reset watchlist" @click=${this.resetWatchlist}>Reset</button>
-          <igc-button @click=${this.saveSettings}>Save</igc-button>
+          <button class="icon-button" title="Clear cache" @click=${() => this.clearCache()}>Clear</button>
+          <button class="icon-button" title="Reset watchlist" @click=${() => this.resetWatchlist()}>Reset</button>
+          <igc-button @click=${() => this.saveSettings()}>Save</igc-button>
         </div>
       </section>
     `;

@@ -99,8 +99,8 @@ export class StockChart extends LitElement {
     const gradientId = this.change >= 0 ? 'chart-fill-up' : 'chart-fill-down';
 
     return html`
-      <div class="chart" @mouseleave=${this.clearHover}>
-        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" @mousemove=${this.handleMove}>
+      <div class="chart" @mouseleave=${() => this.clearHover()}>
+        <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" @mousemove=${(event: MouseEvent) => this.handleMove(event)}>
           <defs>
             <linearGradient id="chart-fill-up" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stop-color="#24c875" stop-opacity="0.34"></stop>

@@ -10,6 +10,7 @@ import type {
 import { ProviderUnavailableError } from '../models/market';
 
 type Fetcher = typeof fetch;
+type JsonRecord = Record<string, unknown>;
 
 const endpoint = 'https://www.alphavantage.co/query';
 
@@ -18,7 +19,7 @@ async function getFetcher(): Promise<Fetcher> {
   if (!isTauri) return globalThis.fetch.bind(globalThis);
 
   const mod = await import('@tauri-apps/plugin-http');
-  return mod.fetch as unknown as Fetcher;
+  return mod.fetch;
 }
 
 function alphaUrl(params: Record<string, string>) {
@@ -53,6 +54,20 @@ function rangeLimit(range: ChartRange): number {
   }[range];
 }
 
+function isRecord(value: unknown): value is JsonRecord {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function stringValue(value: unknown, fallback = ''): string {
+  return typeof value === 'string' ? value : fallback;
+}
+
+function numberValue(value: unknown): number {
+  if (typeof value === 'number') return value;
+  if (typeof value === 'string') return Number(value) || 0;
+  return 0;
+}
+
 export class AlphaVantageProvider implements MarketDataProvider {
   readonly name = 'Alpha Vantage';
 
@@ -69,14 +84,14 @@ export class AlphaVantageProvider implements MarketDataProvider {
       keywords: query.trim()
     });
 
-    const matches = Array.isArray(payload.bestMatches) ? payload.bestMatches : [];
+    const matches = Array.isArray(payload.bestMatches) ? payload.bestMatches.filter(isRecord) : [];
 
     return matches.slice(0, 8).map((item) => ({
-      symbol: String(item['1. symbol'] ?? ''),
-      name: String(item['2. name'] ?? ''),
-      exchange: String(item['4. region'] ?? ''),
-      currency: String(item['8. currency'] ?? 'USD'),
-      region: String(item['4. region'] ?? '')
+      symbol: stringValue(item['1. symbol']),
+      name: stringValue(item['2. name']),
+      exchange: stringValue(item['4. region']),
+      currency: stringValue(item['8. currency'], 'USD'),
+      region: stringValue(item['4. region'])
     }));
   }
 
@@ -87,21 +102,19 @@ export class AlphaVantageProvider implements MarketDataProvider {
     });
 
     const quote = payload['Global Quote'];
-    if (!quote || typeof quote !== 'object') {
+    if (!isRecord(quote)) {
       throw new ProviderUnavailableError(`No quote returned for ${symbol}`);
     }
 
-    const raw = quote as Record<string, string>;
-
     return {
-      symbol: raw['01. symbol'] || symbol,
-      name: raw['01. symbol'] || symbol,
-      price: Number(raw['05. price']) || 0,
-      change: Number(raw['09. change']) || 0,
-      changePercent: parsePercent(raw['10. change percent']),
+      symbol: stringValue(quote['01. symbol'], symbol),
+      name: stringValue(quote['01. symbol'], symbol),
+      price: numberValue(quote['05. price']),
+      change: numberValue(quote['09. change']),
+      changePercent: parsePercent(stringValue(quote['10. change percent'])),
       currency: 'USD',
       exchange: '',
-      lastUpdated: raw['07. latest trading day'] || new Date().toISOString()
+      lastUpdated: stringValue(quote['07. latest trading day'], new Date().toISOString())
     };
   }
 
@@ -113,20 +126,23 @@ export class AlphaVantageProvider implements MarketDataProvider {
     });
 
     const series = payload['Time Series (Daily)'];
-    if (!series || typeof series !== 'object') {
+    if (!isRecord(series)) {
       throw new ProviderUnavailableError(`No history returned for ${symbol}`);
     }
 
-    return Object.entries(series as Record<string, Record<string, string>>)
+    return Object.entries(series)
       .slice(0, rangeLimit(range))
-      .map(([date, bar]) => ({
-        timestamp: new Date(`${date}T16:00:00Z`).toISOString(),
-        open: Number(bar['1. open']) || 0,
-        high: Number(bar['2. high']) || 0,
-        low: Number(bar['3. low']) || 0,
-        close: Number(bar['4. close']) || 0,
-        volume: Number(bar['6. volume']) || 0
-      }))
+      .map(([date, value]) => {
+        const bar = isRecord(value) ? value : {};
+        return {
+          timestamp: new Date(`${date}T16:00:00Z`).toISOString(),
+          open: numberValue(bar['1. open']),
+          high: numberValue(bar['2. high']),
+          low: numberValue(bar['3. low']),
+          close: numberValue(bar['4. close']),
+          volume: numberValue(bar['6. volume'])
+        };
+      })
       .reverse();
   }
 
@@ -138,18 +154,19 @@ export class AlphaVantageProvider implements MarketDataProvider {
       limit: '12'
     });
 
-    const feed = Array.isArray(payload.feed) ? payload.feed : [];
+    const feed = Array.isArray(payload.feed) ? payload.feed.filter(isRecord) : [];
 
     return feed.map((item, index) => ({
-      id: String(item.url ?? `${symbol}-${index}`),
-      title: String(item.title ?? 'Market update'),
-      source: String(item.source ?? 'Alpha Vantage'),
-      url: String(item.url ?? 'https://www.alphavantage.co/'),
-      summary: String(item.summary ?? ''),
-      publishedAt: parseAlphaTimestamp(String(item.time_published ?? '')),
+      id: stringValue(item.url, `${symbol}-${index}`),
+      title: stringValue(item.title, 'Market update'),
+      source: stringValue(item.source, 'Alpha Vantage'),
+      url: stringValue(item.url, 'https://www.alphavantage.co/'),
+      summary: stringValue(item.summary),
+      publishedAt: parseAlphaTimestamp(stringValue(item.time_published)),
       relatedSymbols: Array.isArray(item.ticker_sentiment)
         ? item.ticker_sentiment
-            .map((ticker: { ticker?: unknown }) => String(ticker.ticker ?? ''))
+            .filter(isRecord)
+            .map((ticker) => stringValue(ticker.ticker))
             .filter(Boolean)
         : [symbol]
     }));
@@ -163,7 +180,7 @@ export class AlphaVantageProvider implements MarketDataProvider {
     };
   }
 
-  private async request(params: Record<string, string>): Promise<Record<string, any>> {
+  private async request(params: Record<string, string>): Promise<JsonRecord> {
     if (!this.configured) {
       throw new ProviderUnavailableError('Alpha Vantage API key is not configured');
     }
@@ -182,7 +199,7 @@ export class AlphaVantageProvider implements MarketDataProvider {
 
     const payload = (await response.json()) as Record<string, unknown>;
     assertUsablePayload(payload);
-    return payload as Record<string, any>;
+    return payload;
   }
 }
 

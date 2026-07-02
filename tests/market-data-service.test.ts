@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { MarketDataService } from '../src/services/market-data-service';
-import type { ChartRange, MarketDataProvider } from '../src/models/market';
+import type { MarketDataProvider } from '../src/models/market';
 import { ProviderUnavailableError } from '../src/models/market';
 import { MockMarketDataProvider } from '../src/services/mock-provider';
 
@@ -51,8 +51,8 @@ describe('MarketDataService', () => {
     const spy = vi.spyOn(provider, 'getHistory');
     const service = new MarketDataService(provider, provider, 60_000);
 
-    await service.getHistory('NVDA', '1M' as ChartRange);
-    await service.getHistory('NVDA', '1Y' as ChartRange);
+    await service.getHistory('NVDA', '1M');
+    await service.getHistory('NVDA', '1Y');
 
     expect(spy).toHaveBeenCalledTimes(2);
   });
