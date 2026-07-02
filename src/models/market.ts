@@ -2,6 +2,8 @@ export type ChartRange = '1D' | '1W' | '1M' | '6M' | '1Y';
 
 export type ProviderStatus = 'mock' | 'live' | 'fallback' | 'error';
 
+export type StreamStatus = 'disabled' | 'connecting' | 'connected' | 'fallback' | 'error';
+
 export interface SymbolSearchResult {
   symbol: string;
   name: string;
@@ -19,6 +21,26 @@ export interface Quote {
   currency: string;
   exchange: string;
   lastUpdated: string;
+}
+
+export interface StreamingQuoteUpdate {
+  symbol: string;
+  price: number;
+  timestamp: string;
+  volume?: number;
+}
+
+export type StreamingQuoteHandler = (update: StreamingQuoteUpdate) => void;
+export type StreamStatusHandler = (status: StreamStatus, message?: string) => void;
+export type QuoteStreamUnsubscribe = () => void;
+
+export interface QuoteStreamProvider {
+  readonly name: string;
+  subscribeQuotes(
+    symbols: string[],
+    onQuote: StreamingQuoteHandler,
+    onStatus?: StreamStatusHandler
+  ): QuoteStreamUnsubscribe;
 }
 
 export interface HistoricalBar {
@@ -60,6 +82,7 @@ export interface AppState {
   selectedSymbol: string;
   chartRange: ChartRange;
   providerStatus: ProviderStatus;
+  streamStatus: StreamStatus;
   apiKeyConfigured: boolean;
   theme: 'dark' | 'light';
 }

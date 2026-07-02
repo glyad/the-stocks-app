@@ -6,6 +6,7 @@ export interface AppSettings {
   selectedSymbol: string;
   chartRange: ChartRange;
   apiKey: string;
+  streamApiKey: string;
   theme: 'dark' | 'light';
 }
 
@@ -14,6 +15,7 @@ export const defaultSettings: AppSettings = {
   selectedSymbol: defaultWatchlist[0],
   chartRange: '1M',
   apiKey: '',
+  streamApiKey: '',
   theme: 'dark'
 };
 
@@ -61,6 +63,7 @@ function normalizeSettings(value: Partial<AppSettings> | undefined): AppSettings
     selectedSymbol,
     chartRange: value?.chartRange ?? defaultSettings.chartRange,
     apiKey: value?.apiKey ?? '',
+    streamApiKey: value?.streamApiKey ?? '',
     theme: value?.theme ?? defaultSettings.theme
   };
 }

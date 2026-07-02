@@ -2,6 +2,7 @@ import { LitElement, css, html, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import './stock-chart';
 import { AlphaVantageProvider } from '../services/alpha-vantage-provider';
+import { FinnhubStreamingProvider } from '../services/finnhub-streaming-provider';
 import { MarketDataService } from '../services/market-data-service';
 import { MockMarketDataProvider } from '../services/mock-provider';
 import { PersistentAppStore, defaultSettings, type AppSettings } from '../services/app-store';
@@ -13,6 +14,9 @@ import type {
   NewsItem,
   ProviderStatus,
   Quote,
+  QuoteStreamUnsubscribe,
+  StreamStatus,
+  StreamingQuoteUpdate,
   SymbolSearchResult
 } from '../models/market';
 
@@ -48,6 +52,12 @@ export class StocksApp extends LitElement {
   private marketStatus: MarketStatus | null = null;
 
   @state()
+  private streamStatus: StreamStatus = 'disabled';
+
+  @state()
+  private streamMessage = 'Streaming disabled';
+
+  @state()
   private loading = true;
 
   @state()
@@ -57,11 +67,15 @@ export class StocksApp extends LitElement {
   private apiKeyDraft = '';
 
   @state()
+  private streamApiKeyDraft = '';
+
+  @state()
   private message = '';
 
   private readonly store = new PersistentAppStore();
   private readonly fallbackProvider = new MockMarketDataProvider();
   private readonly service = new MarketDataService(this.fallbackProvider, this.fallbackProvider);
+  private unsubscribeQuotes: QuoteStreamUnsubscribe | null = null;
 
   static styles = css`
     :host {
@@ -134,8 +148,13 @@ export class StocksApp extends LitElement {
     }
 
     .status-dot.live,
-    .status-dot.mock {
+    .status-dot.mock,
+    .status-dot.connected {
       background: var(--green);
+    }
+
+    .status-dot.error {
+      background: var(--red);
     }
 
     .search {
@@ -542,6 +561,11 @@ export class StocksApp extends LitElement {
     await this.refreshAll();
   }
 
+  disconnectedCallback() {
+    this.stopQuoteStream();
+    super.disconnectedCallback();
+  }
+
   render() {
     const selected = this.selectedQuote;
 
@@ -565,6 +589,7 @@ export class StocksApp extends LitElement {
           <div class="market-state">
             <span><span class="status-dot ${this.providerStatus}"></span>${statusLabel(this.providerStatus)}</span>
             <span>${this.marketStatus?.label ?? 'Loading market'}</span>
+            <span><span class="status-dot ${this.streamStatus}"></span>${streamStatusLabel(this.streamStatus)}</span>
           </div>
         </div>
         <div class="search">
@@ -724,9 +749,28 @@ export class StocksApp extends LitElement {
             />
             <p class="muted">Without a key, the app stays in mock mode. Free Alpha Vantage accounts are rate limited.</p>
           </div>
+          <div class="field">
+            <label for="stream-api-key">Finnhub WebSocket API key</label>
+            <input
+              id="stream-api-key"
+              type="password"
+              autocomplete="off"
+              placeholder="Paste Finnhub API key"
+              .value=${this.streamApiKeyDraft}
+              @input=${(event: Event) => {
+                this.streamApiKeyDraft = (event.currentTarget as HTMLInputElement).value;
+              }}
+            />
+            <p class="muted">When configured, watchlist quotes update from WebSocket trades instead of timer polling.</p>
+          </div>
           <div class="metric">
             <span>Provider</span>
             <strong>${statusLabel(this.providerStatus)}</strong>
+          </div>
+          <div class="metric">
+            <span>Quote stream</span>
+            <strong>${streamStatusLabel(this.streamStatus)}</strong>
+            <span class="muted">${this.streamMessage}</span>
           </div>
           <div class="metric">
             <span>Watchlist</span>
@@ -745,7 +789,9 @@ export class StocksApp extends LitElement {
   private async restoreSettings() {
     this.settings = await this.store.load();
     this.apiKeyDraft = this.settings.apiKey;
+    this.streamApiKeyDraft = this.settings.streamApiKey;
     this.configureProvider();
+    this.configureQuoteStream();
   }
 
   private configureProvider() {
@@ -754,6 +800,14 @@ export class StocksApp extends LitElement {
       : this.fallbackProvider;
     this.service.setPrimaryProvider(provider);
     this.providerStatus = this.service.status;
+  }
+
+  private configureQuoteStream() {
+    const streamProvider = this.settings.streamApiKey.trim()
+      ? new FinnhubStreamingProvider(this.settings.streamApiKey)
+      : null;
+    this.service.setStreamProvider(streamProvider);
+    this.restartQuoteStream();
   }
 
   private async refreshAll() {
@@ -765,6 +819,7 @@ export class StocksApp extends LitElement {
     } finally {
       this.providerStatus = this.service.status;
       this.loading = false;
+      this.restartQuoteStream();
     }
   }
 
@@ -872,6 +927,7 @@ export class StocksApp extends LitElement {
 
   private openSettings() {
     this.apiKeyDraft = this.settings.apiKey;
+    this.streamApiKeyDraft = this.settings.streamApiKey;
     this.settingsOpen = true;
   }
 
@@ -880,9 +936,14 @@ export class StocksApp extends LitElement {
   }
 
   private async saveSettings() {
-    this.settings = { ...this.settings, apiKey: this.apiKeyDraft.trim() };
+    this.settings = {
+      ...this.settings,
+      apiKey: this.apiKeyDraft.trim(),
+      streamApiKey: this.streamApiKeyDraft.trim()
+    };
     await this.persistSettings();
     this.configureProvider();
+    this.configureQuoteStream();
     this.settingsOpen = false;
     await this.refreshAll();
   }
@@ -904,6 +965,44 @@ export class StocksApp extends LitElement {
 
   private async persistSettings() {
     await this.store.save(this.settings);
+  }
+
+  private restartQuoteStream() {
+    this.stopQuoteStream();
+    this.unsubscribeQuotes = this.service.subscribeQuotes(
+      this.settings.watchlist,
+      (update) => this.applyStreamingQuote(update),
+      (status, message) => {
+        this.streamStatus = status;
+        this.streamMessage = message ?? streamStatusLabel(status);
+      }
+    );
+  }
+
+  private stopQuoteStream() {
+    this.unsubscribeQuotes?.();
+    this.unsubscribeQuotes = null;
+  }
+
+  private applyStreamingQuote(update: StreamingQuoteUpdate) {
+    const existing = this.quotes.get(update.symbol);
+    if (!existing) return;
+
+    const change = Number((update.price - existing.price + existing.change).toFixed(2));
+    const previousClose = existing.price - existing.change;
+    const changePercent = previousClose ? Number(((change / previousClose) * 100).toFixed(2)) : existing.changePercent;
+    const quote = {
+      ...existing,
+      price: update.price,
+      change,
+      changePercent,
+      lastUpdated: update.timestamp
+    };
+
+    this.quotes = new Map(this.quotes).set(update.symbol, quote);
+    if (this.settings.selectedSymbol === update.symbol) {
+      this.selectedQuote = quote;
+    }
   }
 }
 
@@ -948,5 +1047,15 @@ function statusLabel(status: ProviderStatus) {
     live: 'Live data',
     fallback: 'Fallback data',
     error: 'Provider error'
+  }[status];
+}
+
+function streamStatusLabel(status: StreamStatus) {
+  return {
+    disabled: 'Streaming off',
+    connecting: 'Connecting stream',
+    connected: 'Live stream',
+    fallback: 'Stream fallback',
+    error: 'Stream error'
   }[status];
 }

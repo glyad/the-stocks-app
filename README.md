@@ -54,9 +54,9 @@ During release preparation, `scripts/sync-version.mjs` keeps the Tauri package v
 
 ## Market Data
 
-The app uses a swappable market data provider. Alpha Vantage is the first live provider, and mock data is always available as a fallback for missing keys, network errors, and free-tier rate limits.
+The app uses swappable market data providers. Alpha Vantage handles search, historical candles, and news. Finnhub WebSocket can stream live watchlist quote updates without timer-based polling. Mock data is always available as a fallback for missing keys, network errors, and free-tier rate limits.
 
-Enter an Alpha Vantage API key from the app settings panel. Keys are persisted locally through Tauri Store when running in the desktop shell, with `localStorage` as a browser development fallback.
+Enter Alpha Vantage and Finnhub API keys from the app settings panel. Keys are persisted locally through Tauri Store when running in the desktop shell, with `localStorage` as a browser development fallback.
 
 ## License Notes
 

@@ -5,6 +5,10 @@ import type {
   MarketStatus,
   NewsItem,
   ProviderStatus,
+  QuoteStreamProvider,
+  QuoteStreamUnsubscribe,
+  StreamStatus,
+  StreamingQuoteHandler,
   Quote,
   SymbolSearchResult
 } from '../models/market';
@@ -23,7 +27,8 @@ export class MarketDataService {
   constructor(
     private primary: MarketDataProvider,
     private fallback: MarketDataProvider,
-    private readonly ttlMs = 5 * 60 * 1000
+    private readonly ttlMs = 5 * 60 * 1000,
+    private streamProvider: QuoteStreamProvider | null = null
   ) {
     this.status = primary.name === fallback.name ? 'mock' : 'live';
   }
@@ -32,6 +37,10 @@ export class MarketDataService {
     this.primary = provider;
     this.clearCache();
     this.status = provider.name === this.fallback.name ? 'mock' : 'live';
+  }
+
+  setStreamProvider(provider: QuoteStreamProvider | null) {
+    this.streamProvider = provider;
   }
 
   clearCache() {
@@ -61,6 +70,19 @@ export class MarketDataService {
 
   getMarketStatus(): Promise<MarketStatus> {
     return this.withFallback('market-status', (provider) => provider.getMarketStatus());
+  }
+
+  subscribeQuotes(
+    symbols: string[],
+    onQuote: StreamingQuoteHandler,
+    onStatus?: (status: StreamStatus, message?: string) => void
+  ): QuoteStreamUnsubscribe {
+    if (!this.streamProvider) {
+      onStatus?.('disabled', 'No quote stream provider configured.');
+      return () => undefined;
+    }
+
+    return this.streamProvider.subscribeQuotes(symbols, onQuote, onStatus);
   }
 
   private async withFallback<T>(key: string, call: ProviderCall<T>): Promise<T> {
