@@ -6,6 +6,7 @@ src-tauri/gen/
 .DS_Store
 .env
 .env.*
-.vscode/
+.vscode/*
+!.vscode/mcp.json
 playwright-report/
 test-results/

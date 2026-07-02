@@ -31,9 +31,9 @@
     "@tauri-apps/plugin-http": "^2.0.0",
     "@tauri-apps/plugin-store": "^2.0.0",
     "@webcomponents/custom-elements": "^1.6.0",
-    "igniteui-webcomponents": "^5.2.0",
-    "igniteui-webcomponents-charts": "^5.2.0",
-    "igniteui-webcomponents-core": "^5.2.0",
+    "igniteui-webcomponents": "^7.2.4",
+    "igniteui-webcomponents-charts": "^7.1.0",
+    "igniteui-webcomponents-core": "^7.1.0",
     "lit": "^3.2.0"
   },
   "devDependencies": {
@@ -58,6 +58,7 @@
     "globals": "^15.0.0",
     "happy-dom": "^14.12.0",
     "husky": "^9.0.0",
+    "igniteui-theming": "^27.3.0",
     "lint-staged": "^15.0.0",
     "prettier": "^3.0.0",
     "semantic-release": "^24.0.0",

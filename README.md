@@ -62,6 +62,6 @@ Enter an Alpha Vantage API key from the app settings panel. Keys are persisted l
 
 Ignite UI for Web Components trial packages are used for development. Upgrade to licensed packages before distributing an app that uses premium Infragistics components.
 
-## Infragistics Tooling
+## Infragistics AI Tooling
 
-The app depends on Ignite UI for Web Components packages. No Infragistics MCP server or Codex skill is available in this workspace, so there is no active MCP connection to configure here. If an Infragistics MCP server becomes available, add it to the Codex MCP configuration and document the server name and required credentials in this section.
+The app depends on Ignite UI for Web Components packages and includes project-scoped MCP configuration for the official Infragistics AI tools. See `docs/infragistics-ai.md`.
