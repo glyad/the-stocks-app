@@ -32,6 +32,8 @@ export class StockChart extends LitElement {
   @query('igc-financial-chart')
   private chart?: IgcFinancialChartComponent;
 
+  private configureRequest = 0;
+
   static styles = css`
     :host {
       display: block;
@@ -67,7 +69,7 @@ export class StockChart extends LitElement {
 
   protected updated(changedProperties: Map<PropertyKey, unknown>) {
     if (changedProperties.has('bars') || changedProperties.has('change')) {
-      this.configureChart();
+      void this.configureChart();
     }
   }
 
@@ -83,13 +85,15 @@ export class StockChart extends LitElement {
     `;
   }
 
-  private configureChart() {
-    if (!this.chart || this.bars.length < 2) return;
+  private async configureChart() {
+    const request = ++this.configureRequest;
+    await customElements.whenDefined('igc-financial-chart');
+
+    if (request !== this.configureRequest || !this.chart || this.bars.length < 2) return;
 
     const positive = this.change >= 0;
     this.chart.width = '100%';
     this.chart.height = '100%';
-    this.chart.dataSource = this.chartRows;
     this.chart.chartType = FinancialChartType.Candle;
     this.chart.volumeType = FinancialChartVolumeType.Column;
     this.chart.xAxisMode = FinancialChartXAxisMode.Ordinal;
@@ -105,7 +109,7 @@ export class StockChart extends LitElement {
     this.chart.volumeOutlines = [positive ? '#24c875' : '#ff5f57'];
     this.chart.indicatorBrushes = ['#5aa7ff'];
     this.chart.indicatorNegativeBrushes = ['#ff5f57'];
-    this.chart.bindData();
+    this.chart.dataSource = this.chartRows;
   }
 
   private get chartRows(): FinancialChartRow[] {
