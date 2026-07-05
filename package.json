@@ -1,0 +1,81 @@
+{
+  "name": "the-stocks-app",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@11.7.0",
+  "engines": {
+    "node": ">=20.11.0",
+    "npm": ">=10.0.0"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 1420",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\" \"*.ts\" \"*.js\" \"*.cjs\" \"scripts/**/*.mjs\" --max-warnings=0",
+    "lint:fix": "npm run lint -- --fix",
+    "build": "npm run typecheck && vite build",
+    "check": "npm run lint && npm run test && npm run build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173",
+    "desktop:dev": "tauri dev",
+    "desktop:build": "tauri build",
+    "desktop:release": "tauri build --no-bundle && node scripts/run-tauri-release.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "prepare": "husky",
+    "lint-staged": "lint-staged",
+    "commitlint": "commitlint --from=HEAD~1 --to=HEAD --verbose",
+    "release": "semantic-release",
+    "release:dry-run": "semantic-release --dry-run",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-http": "^2.0.0",
+    "@tauri-apps/plugin-store": "^2.0.0",
+    "@webcomponents/custom-elements": "^1.6.0",
+    "igniteui-webcomponents": "^7.2.4",
+    "igniteui-webcomponents-charts": "^7.1.0",
+    "igniteui-webcomponents-core": "^7.1.0",
+    "lit": "^3.2.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.45.0",
+    "@semantic-release/changelog": "^6.0.0",
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/git": "^10.0.0",
+    "@semantic-release/github": "^11.0.0",
+    "@semantic-release/npm": "^12.0.0",
+    "@semantic-release/exec": "^7.0.0",
+    "@semantic-release/release-notes-generator": "^14.0.0",
+    "@tauri-apps/cli": "^2.0.0",
+    "@types/node": "^20.14.0",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-lit": "^1.15.0",
+    "eslint-plugin-wc": "^2.1.0",
+    "globals": "^15.0.0",
+    "happy-dom": "^14.12.0",
+    "husky": "^9.0.0",
+    "igniteui-theming": "^27.3.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0",
+    "semantic-release": "^24.0.0",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.0.0",
+    "vite": "^5.4.0",
+    "vitest": "^2.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  }
+}
