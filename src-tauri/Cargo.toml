@@ -1,6 +1,6 @@
 [package]
 name = "the-stocks-app"
-version = "1.0.0-beta.1"
+version = "1.0.0-beta.2"
 description = "A cross-platform desktop stocks application"
 authors = ["The Stocks App"]
 license = ""

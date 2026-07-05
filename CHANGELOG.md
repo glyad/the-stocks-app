@@ -1,3 +1,9 @@
+## [1.0.0-beta.2](https://github.com/glyad/the-stocks-app/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2026-07-05)
+
+### Bug Fixes
+
+- sync tauri lockfile version ([e951c6f](https://github.com/glyad/the-stocks-app/commit/e951c6f62f107bb46dbde951ebfd1867a48b3aa2))
+
 ## 1.0.0-beta.1 (2026-07-05)
 
 ### Features
