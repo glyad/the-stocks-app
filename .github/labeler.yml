@@ -1,0 +1,29 @@
+frontend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/**
+          - index.html
+          - vite.config.ts
+
+desktop:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src-tauri/**
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - tests/**
+          - playwright.config.ts
+          - vitest.config.ts
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - README.md
+          - docs/**
