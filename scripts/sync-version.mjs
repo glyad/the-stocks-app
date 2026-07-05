@@ -10,6 +10,13 @@ await updateTextFile('src-tauri/Cargo.toml', (source) =>
   source.replace(/^version = ".+"$/m, `version = "${version}"`)
 );
 
+await updateTextFile('src-tauri/Cargo.lock', (source) =>
+  source.replace(
+    /(\[\[package\]\]\nname = "the-stocks-app"\nversion = ")[^"]+(")/,
+    `$1${version}$2`
+  )
+);
+
 await updateJsonFile('src-tauri/tauri.conf.json', (config) => ({
   ...config,
   version

@@ -3592,7 +3592,7 @@ dependencies = [
 
 [[package]]
 name = "the-stocks-app"
-version = "0.1.0"
+version = "1.0.0-beta.1"
 dependencies = [
  "serde",
  "serde_json",

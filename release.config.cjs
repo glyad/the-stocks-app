@@ -56,6 +56,7 @@ module.exports = {
           'CHANGELOG.md',
           'package.json',
           'package-lock.json',
+          'src-tauri/Cargo.lock',
           'src-tauri/Cargo.toml',
           'src-tauri/tauri.conf.json'
         ],
