@@ -48,7 +48,7 @@ main -> develop -> feature/*
 The project uses semantic versioning through `semantic-release`.
 
 - `main` publishes stable releases and tags such as `v1.2.3`.
-- `develop` publishes prereleases such as `v1.3.0-beta.1`.
+- `develop` is the integration branch and must not publish versions.
 - Feature branches do not publish releases.
 
 Useful commands:

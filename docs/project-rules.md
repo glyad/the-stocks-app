@@ -20,6 +20,7 @@ These rules guide future work on The Stocks App.
 
 - Follow Git Flow conventions: `main` for stable releases, `develop` for integration, and `feature/*` for feature work.
 - Use conventional commits and semantic versioning.
+- Publish versions only from `main`; merging into `develop` must run validation but must not produce a semantic-release version or release artifact.
 - Open draft pull requests for feature branches until validation and review are complete.
 - Link pull requests to their planning issue using closing keywords or explicit references.
 - Include scope, implementation notes, testing, risks, and rollout notes in PR descriptions.
