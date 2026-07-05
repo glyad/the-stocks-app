@@ -12,7 +12,19 @@ npm run dev
 To run the desktop shell:
 
 ```bash
-npm run tauri dev
+npm run desktop:dev
+```
+
+To run a release-mode desktop binary without packaging installers:
+
+```bash
+npm run desktop:release
+```
+
+To build full desktop bundles:
+
+```bash
+npm run desktop:build
 ```
 
 ## Quality Gates
