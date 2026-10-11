@@ -3,7 +3,7 @@ name: superpowers-diagnosing-superpowers
 description: Use when a superpowers session went wrong and your human partner wants to know why — repeated work, ignored plans, stumbles, poor results, a skill that didn't fire, "it took too long", "why is it so expensive", "what is it doing" — or wants to build a bug report for the superpowers maintainers, for the current session or a past one identified by id or path, on any harness.
 ---
 
-> Repository policy: This skill is opt-in. Apply it only when the user explicitly requests Superpowers for the current task or chat. Prefer this repository copy and its supporting files over the globally installed plugin. Installation alone does not enable automatic workflows.
+> Repository policy: Superpowers is enabled by default in this repository. Apply this skill automatically when relevant, using this repository copy and its supporting files rather than the globally installed plugin. This project authorization applies only within this repository. Explicit user instructions take precedence.
 
 # Diagnosing Superpowers
 

@@ -3,4 +3,4 @@ interface:
   short_description: "Evaluate review feedback before implementing changes"
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

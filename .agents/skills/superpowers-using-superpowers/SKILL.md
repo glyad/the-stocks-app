@@ -3,7 +3,7 @@ name: superpowers-using-superpowers
 description: Use when starting any conversation - establishes how to find and use skills, requiring skill invocation before ANY response including clarifying questions
 ---
 
-> Repository policy: This skill is opt-in. Apply it only when the user explicitly requests Superpowers for the current task or chat. Prefer this repository copy and its supporting files over the globally installed plugin. Installation alone does not enable automatic workflows.
+> Repository policy: Superpowers is enabled by default in this repository. Apply this skill automatically when relevant, using this repository copy and its supporting files rather than the globally installed plugin. This project authorization applies only within this repository. Explicit user instructions take precedence.
 
 <SUBAGENT-STOP>
 If you were dispatched as a subagent to execute a specific task, ignore this skill.

@@ -3,7 +3,7 @@ name: superpowers-executing-plans
 description: Use when executing an implementation plan in the current session as the implementer yourself — your human partner chose inline execution, or no subagent tool is available
 ---
 
-> Repository policy: This skill is opt-in. Apply it only when the user explicitly requests Superpowers for the current task or chat. Prefer this repository copy and its supporting files over the globally installed plugin. Installation alone does not enable automatic workflows.
+> Repository policy: Superpowers is enabled by default in this repository. Apply this skill automatically when relevant, using this repository copy and its supporting files rather than the globally installed plugin. This project authorization applies only within this repository. Explicit user instructions take precedence.
 
 # Executing Plans
 

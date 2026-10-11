@@ -3,4 +3,4 @@ interface:
   short_description: "Explore intent, requirements, and design before implementation"
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

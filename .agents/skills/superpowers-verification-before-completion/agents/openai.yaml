@@ -3,4 +3,4 @@ interface:
   short_description: "Verify claims with commands and output before declaring success"
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

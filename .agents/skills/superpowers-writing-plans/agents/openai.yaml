@@ -3,4 +3,4 @@ interface:
   short_description: "Turn specs into detailed multi-step implementation plans"
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

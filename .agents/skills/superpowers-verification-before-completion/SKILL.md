@@ -3,7 +3,7 @@ name: superpowers-verification-before-completion
 description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
 ---
 
-> Repository policy: This skill is opt-in. Apply it only when the user explicitly requests Superpowers for the current task or chat. Prefer this repository copy and its supporting files over the globally installed plugin. Installation alone does not enable automatic workflows.
+> Repository policy: Superpowers is enabled by default in this repository. Apply this skill automatically when relevant, using this repository copy and its supporting files rather than the globally installed plugin. This project authorization applies only within this repository. Explicit user instructions take precedence.
 
 # Verification Before Completion
 

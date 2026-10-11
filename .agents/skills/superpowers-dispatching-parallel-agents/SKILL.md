@@ -3,7 +3,7 @@ name: superpowers-dispatching-parallel-agents
 description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
 ---
 
-> Repository policy: This skill is opt-in. Apply it only when the user explicitly requests Superpowers for the current task or chat. Prefer this repository copy and its supporting files over the globally installed plugin. Installation alone does not enable automatic workflows.
+> Repository policy: Superpowers is enabled by default in this repository. Apply this skill automatically when relevant, using this repository copy and its supporting files rather than the globally installed plugin. This project authorization applies only within this repository. Explicit user instructions take precedence.
 
 # Dispatching Parallel Agents
 

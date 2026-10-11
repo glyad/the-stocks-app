@@ -3,4 +3,4 @@ interface:
   short_description: "Find root causes before attempting fixes"
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

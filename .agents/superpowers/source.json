@@ -23,8 +23,8 @@
   "adaptations": [
     "Names and inter-skill references use superpowers- prefix.",
     "Relative sibling references point to prefixed folders.",
-    "Local policy requires explicit Superpowers authorization.",
-    "UI metadata labels repository copies and disables implicit invocation."
+    "Local policy explicitly enables Superpowers automatically within this repository.",
+    "UI metadata labels repository copies and enables implicit invocation."
   ],
   "upstream_skill_sha256": {
     "brainstorming": "a32d2255354775aa124855aa7100cf276bea096fff4ebb3a0edf57be216e6c72",

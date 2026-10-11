@@ -3,4 +3,4 @@ interface:
   short_description: "Execute implementation plans with staged subagent reviews"
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true
