@@ -43,6 +43,25 @@ Commits use Conventional Commits and are checked by Commitlint through Husky. Th
 main -> develop -> feature/*
 ```
 
+## Desktop E2E Tests
+
+WebdriverIO drives the actual Tauri webview using the [embedded Tauri provider](https://webdriver.io/docs/desktop-testing/tauri/plugin-setup). Install the usual Tauri platform prerequisites and run:
+
+```bash
+npm ci
+npm run test:e2e:desktop
+```
+
+This builds a debug executable with the opt-in Rust `e2e` feature and Vite `e2e` mode, then runs `tests/desktop/*.spec.ts`. The feature enables the embedded WebDriver server and the WDIO backend bridge; the separate Tauri config grants their permissions only for this build. Normal desktop builds exclude both plugins and the frontend bridge. Do not distribute the E2E binary.
+
+To rerun tests against that existing build:
+
+```bash
+npm run test:e2e:desktop:run
+```
+
+The configuration supports macOS, Windows, and Linux without an external `tauri-driver`. Linux needs a graphical session (use `xvfb-run -a npm run test:e2e:desktop` in headless CI) and the standard Tauri WebKitGTK dependencies. The suite uses the app's local settings, so use a clean OS user/profile for reproducible mock-data runs. Playwright browser tests remain available through `npm run test:e2e`.
+
 ## Versioning and Releases
 
 The project uses semantic versioning through `semantic-release`.
