@@ -1,0 +1,6 @@
+interface:
+  display_name: "Repo Superpowers: Writing Skills"
+  short_description: "Create and verify skills before deployment"
+
+policy:
+  allow_implicit_invocation: true

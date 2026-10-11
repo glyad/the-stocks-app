@@ -11,6 +11,7 @@ const tsconfigRootDir = fileURLToPath(new URL('.', import.meta.url));
 export default tseslint.config(
   {
     ignores: [
+      '.agents/skills/**',
       'dist/**',
       'node_modules/**',
       'playwright-report/**',

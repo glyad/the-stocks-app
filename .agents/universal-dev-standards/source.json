@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/AsiaOstrich/universal-dev-standards",
+  "revision": "405458381e4c3c4e7d45ec1f65df50acadee221b",
+  "skills": ["commit-standards", "git-workflow-guide", "checkin-assistant"],
+  "adaptations": ["Links outside installed skill folders point to the pinned upstream revision."],
+  "upstream_file_sha256": {
+    "skills/commit-standards/conventional-commits.md": "f76153f2a8dafc6a65e51ff376a52774c47fd4142798c971e519938a2ea006e6",
+    "skills/commit-standards/guide.md": "b8368f3d37392232f72c193ad6242a03671a7953c3450ab1f793eb593fda6537",
+    "skills/commit-standards/SKILL.md": "dbdce648e5ff78c6522a08fb01713e28b459aae83416361c6c7528b6eafdb053",
+    "skills/commit-standards/language-options.md": "62e98ce7c9fa2809b51b54a18a97aa983b2128cabf9a16d12fa4b1178d0a5fea",
+    "skills/git-workflow-guide/branch-naming.md": "9de23b1f55d3f193db763c800479b9f3fb8e01408701fcc42ae58214e2a0f9b3",
+    "skills/git-workflow-guide/git-workflow.md": "7fe3f7af2994813e56ca35df35fea0efa3cdf6ea52ce64e269779836e242cceb",
+    "skills/git-workflow-guide/SKILL.md": "a22de94a9e5c290b0e315556850208bee0688d9cc71d3e521814a40cff91c843",
+    "skills/checkin-assistant/guide.md": "3a3459954dc2cf1ad589a45e80598f0f330ec747bc72b63422fe7fb6b0aa3b35",
+    "skills/checkin-assistant/SKILL.md": "129726ef4936d83fdeedcf136efbefb6b5686e8f8815dc46c5ae1a0db0abdcb8"
+  }
+}
